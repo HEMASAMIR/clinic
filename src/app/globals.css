@@ -1,13 +1,13 @@
 @import "tailwindcss";
 
-/* Mawid brand — deep teal + desert gold on warm sand. */
+/* Mawid brand — clean white, deep teal + gold accents. */
 @theme {
   --color-ink: #0b1f2a;
   --color-ink-soft: #3d5361;
   --color-muted: #6b7f8c;
-  --color-line: #e6e1d6;
-  --color-sand: #faf7f0;
-  --color-sand-deep: #f2ecdf;
+  --color-line: #e6eaef;
+  --color-sand: #f5f7fa;
+  --color-sand-deep: #eef1f5;
   --color-brand: #0d7a6f;
   --color-brand-dark: #095c54;
   --color-brand-soft: #e3f3f0;
@@ -20,7 +20,9 @@
 }
 
 :root {
-  color-scheme: light;
+  /* Declaring dark support makes Chrome's forced/auto dark mode leave the site alone; every
+     colour below is explicit, so the site stays white either way. */
+  color-scheme: light dark;
 }
 
 html {
@@ -29,7 +31,7 @@ html {
 }
 
 body {
-  background: var(--color-sand);
+  background: #ffffff;
   color: var(--color-ink);
   font-family: var(--font-sans);
   text-rendering: optimizeLegibility;
@@ -48,7 +50,7 @@ body {
 
 /* Subtle dotted pattern for hero backgrounds. */
 .pattern {
-  background-image: radial-gradient(circle at 1px 1px, rgb(13 122 111 / 0.13) 1px, transparent 0);
+  background-image: radial-gradient(circle at 1px 1px, rgb(13 122 111 / 0.09) 1px, transparent 0);
   background-size: 22px 22px;
 }
 

@@ -21,10 +21,13 @@ export const metadata = {
     locale: 'ar_SA',
     type: 'website',
   },
+  // Dark Reader extension: keep our own colours.
+  other: { 'darkreader-lock': '' },
 };
 
 export const viewport = {
-  themeColor: '#0d7a6f',
+  themeColor: '#ffffff',
+  colorScheme: 'light dark',
 };
 
 export default function RootLayout({ children }) {
