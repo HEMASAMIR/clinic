@@ -47,7 +47,7 @@ export default function Navbar() {
             لوحة العيادة
           </Link>
           <Link
-            href="/demo"
+            href="/doctors"
             className="rounded-full bg-brand px-5 py-2.5 text-sm font-semibold text-white shadow-soft transition hover:bg-brand-dark"
           >
             جرّب الحجز مجانًا
@@ -78,7 +78,7 @@ export default function Navbar() {
             <Link href="/dashboard" className="rounded-xl border border-line bg-white py-3 text-center text-sm font-semibold">
               لوحة العيادة
             </Link>
-            <Link href="/demo" className="rounded-xl bg-brand py-3 text-center text-sm font-semibold text-white">
+            <Link href="/doctors" className="rounded-xl bg-brand py-3 text-center text-sm font-semibold text-white">
               جرّب الحجز
             </Link>
           </div>

@@ -14,7 +14,10 @@ export default function Footer() {
         <div>
           <h3 className="mb-4 text-sm font-semibold text-white">المنتج</h3>
           <ul className="space-y-2.5 text-sm">
-            <li><Link href="/demo" className="hover:text-white">تجربة حجز المريض</Link></li>
+            <li><Link href="/doctors" className="hover:text-white">ابحث عن طبيب واحجز</Link></li>
+            <li><Link href="/patient" className="hover:text-white">بوابة المريض</Link></li>
+            <li><Link href="/doctor" className="hover:text-white">بوابة الطبيب</Link></li>
+            <li><Link href="/reception" className="hover:text-white">الاستقبال وشاشة الانتظار</Link></li>
             <li><Link href="/dashboard" className="hover:text-white">لوحة العيادة</Link></li>
             <li><Link href="/#pricing" className="hover:text-white">الأسعار</Link></li>
             <li><Link href="/#faq" className="hover:text-white">الأسئلة الشائعة</Link></li>

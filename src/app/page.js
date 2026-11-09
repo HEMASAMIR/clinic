@@ -1,8 +1,9 @@
 import Link from 'next/link';
 import {
   Activity, Apple, ArrowLeft, Baby, BarChart3, BellRing, Bone, Brain, Building2, Calculator, Check, ChevronDown,
-  CreditCard, Eye, FileText, Globe, HeartPulse, LayoutDashboard, Link2, Lock, MessageCircle, QrCode, Repeat,
-  ShieldCheck, Smartphone, Smile, Sparkles, Stethoscope, Timer, X, Zap,
+  ClipboardList, CreditCard, Eye, FileHeart, Globe, HeartPulse, Hourglass, LayoutDashboard, Lock, MessageCircle,
+  Monitor, Package, Pill, QrCode, Search, ShieldCheck, Smile, Sparkles, Star, Stethoscope, Timer, UserRound, Users,
+  Video, X, Zap,
 } from 'lucide-react';
 import Navbar from '@/components/site/Navbar';
 import Footer from '@/components/site/Footer';
@@ -31,14 +32,18 @@ const PAINS = [
 ];
 
 const FEATURES = [
-  [Link2, 'رابط حجز باسم عيادتك', 'صفحة أنيقة بشعار العيادة والتخصصات والأطباء والأسعار. حطها في قوقل ماب والإنستقرام.'],
-  [BellRing, 'تذكير تلقائي للمرضى', 'رسالة تأكيد فور الحجز وتذكير قبل الموعد — بدون ما يتصل الاستقبال.'],
-  [Stethoscope, 'جدول لكل طبيب', 'ساعات عمل وإجازات وخدمات لكل طبيب، والنظام يوزّع المواعيد بذكاء.'],
-  [FileText, 'ملف المريض', 'بيانات المريض وسجل زياراته ومواعيده السابقة والقادمة في مكان واحد.'],
-  [Repeat, 'مواعيد المراجعة', 'احجز موعد المتابعة للمريض قبل ما يطلع، وذكّره فيه تلقائيًا.'],
-  [CreditCard, 'عربون ودفع أونلاين', 'جاهز للربط مع مدى وApple Pay وSTC Pay عبر بوابات الدفع المحلية.'],
-  [Smartphone, 'تطبيق باسم عيادتك', 'تطبيق أندرويد وآيفون بشعار العيادة — مرضاك يحجزون بلمسة.'],
-  [BarChart3, 'تقارير الإدارة', 'الإيرادات، أكثر الخدمات طلبًا، أداء كل طبيب، ونسبة الحضور.'],
+  [Hourglass, 'الدور المباشر', 'المريض يشوف من بيته الطبيب على أي رقم وكم واحد قدّامه — وداعًا لساعات الانتظار.'],
+  [BellRing, 'تذكير قبل 24 ساعة وساعتين', 'واتساب أو SMS بزر تأكيد أو إلغاء بضغطة — والموعد الملغي يرجع متاح فورًا.'],
+  [FileHeart, 'الملف الطبي الرقمي', 'التحاليل والأشعة والحساسية والأدوية المزمنة لكل مريض في مكان واحد.'],
+  [Pill, 'روشتة إلكترونية بـ QR', 'اقتراح تلقائي للأدوية والجرعات، تنبيه حساسية، وتوصل للمريض PDF وواتساب.'],
+  [Video, 'استشارات فيديو', 'متابعات وكشوفات عن بُعد بمكالمة مشفّرة داخل المنصة.'],
+  [Users, 'حساب عائلي', 'الأب أو الأم يحجز للأولاد والوالدين، وكل فرد له ملفه الطبي المنفصل.'],
+  [ShieldCheck, 'التأمين الطبي', 'بوبا والتعاونية وميدغلف وغيرها — نسبة التحمّل تنحسب تلقائيًا عند الحجز.'],
+  [CreditCard, 'دفع وتقسيط', 'مدى وApple Pay وSTC Pay، وقسّم العمليات الكبيرة مع تابي وتمارا.'],
+  [Star, 'تقييمات موثّقة', 'ما يقيّم إلا اللي حضر الكشف فعلًا — صفر تقييمات مزيفة.'],
+  [ClipboardList, 'استقبال وشاشة انتظار', 'تسجيل وصول، مرضى بدون حجز، وشاشة تلفزيون تعرض الدور بصوت تنبيه.'],
+  [Package, 'باقات واشتراكات', 'متابعة الحمل، جلسات العلاج الطبيعي، متابعة السكري — دخل ثابت للعيادة.'],
+  [BarChart3, 'تحليلات وخزينة', 'أوقات الذروة، الحضور والإلغاء، أداء الأطباء، وجرد يومي كاش وشبكة وتأمين.'],
 ];
 
 const SPECIALTIES = [
@@ -50,6 +55,15 @@ const SPECIALTIES = [
   [Apple, 'التغذية', 'استشارات، برامج إنقاص وزن'],
   [Brain, 'الصحة النفسية', 'جلسات واستشارات حضورية وعن بُعد'],
   [Building2, 'المجمعات الطبية', 'كل التخصصات والفروع في نظام واحد'],
+];
+
+const PORTALS = [
+  ['/doctors', Search, 'المريض: ابحث واحجز', 'فلترة بالتخصص والمدينة والتأمين والسعر والتقييم والمتاح اليوم، وحجز بالساعة مع الدفع أو التقسيط.', 'border-brand/20 bg-brand-soft/60'],
+  ['/patient', UserRound, 'بوابة المريض', 'الدور المباشر، الملف الطبي، الروشتات PDF، الحساب العائلي، الباقات، والإشعارات.', 'border-sky-100 bg-sky-50'],
+  ['/doctor', Stethoscope, 'بوابة الطبيب', 'طابور اليوم، تاريخ المريض وحساسيته، روشتة ذكية بـ QR، الإجازات وخانات الطوارئ، والفيديو.', 'border-violet-100 bg-violet-50'],
+  ['/reception', ClipboardList, 'الاستقبال', 'تسجيل الوصول، مرضى بدون حجز، إلغاء وتأجيل جماعي بضغطة، والخزينة والفواتير.', 'border-amber-100 bg-amber-50'],
+  ['/queue', Monitor, 'شاشة الانتظار', 'تلفزيون الصالة يعرض الرقم الحالي لكل طبيب مع تنبيه صوتي — يتحدّث لحظيًا.', 'border-white/10 bg-ink text-white'],
+  ['/dashboard', LayoutDashboard, 'الإدارة والتحليلات', 'الإيرادات وأوقات الذروة وأداء الأطباء، التأمين، الباقات، والتقييمات.', 'border-gold/30 bg-gold-soft/70'],
 ];
 
 const STEPS = [
@@ -126,11 +140,11 @@ export default function Home() {
             </p>
             <div className="rise rise-4 mt-8 flex flex-col gap-3 sm:flex-row">
               <Link
-                href="/demo"
+                href="/doctors"
                 className="group relative flex items-center justify-center gap-2 overflow-hidden rounded-2xl bg-brand px-7 py-4 font-bold text-white shadow-lift transition hover:bg-brand-dark"
               >
                 <span className="absolute inset-0 -translate-x-full bg-gradient-to-l from-transparent via-white/25 to-transparent transition duration-700 group-hover:translate-x-full" />
-                جرّب الحجز كأنك مريض
+                جرّب المنصة كمريض
                 <ArrowLeft className="size-4 transition group-hover:-translate-x-1" />
               </Link>
               <Link
@@ -166,6 +180,37 @@ export default function Home() {
                 <p className="mt-2 text-sm text-muted">{label}</p>
               </div>
             ))}
+          </div>
+        </section>
+
+        {/* ── Platform: 5 portals ── */}
+        <section className="py-24">
+          <div className="mx-auto max-w-6xl px-4 sm:px-6">
+            <SectionTitle
+              kicker="مو مجرد صفحة حجز"
+              title="منصة طبية كاملة.. كل واحد له بوابته"
+              sub="المريض والطبيب والاستقبال والإدارة وشاشة الانتظار — كلهم على نفس البيانات لحظة بلحظة. جرّب كل بوابة الآن."
+            />
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {PORTALS.map(([href, Icon, title, text, tone], i) => (
+                <Link
+                  key={href}
+                  href={href}
+                  data-reveal=""
+                  style={d(i, 90)}
+                  className={`spot group relative overflow-hidden rounded-3xl border p-6 transition duration-300 hover:-translate-y-1 hover:shadow-lift ${tone}`}
+                >
+                  <span className="grid size-12 place-items-center rounded-2xl bg-white/90 text-brand shadow-soft transition group-hover:scale-110">
+                    <Icon className="size-6" />
+                  </span>
+                  <h3 className="mt-5 text-lg font-bold">{title}</h3>
+                  <p className="mt-2 text-sm leading-7 opacity-80">{text}</p>
+                  <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-bold">
+                    افتح البوابة <ArrowLeft className="size-4 transition group-hover:-translate-x-1" />
+                  </span>
+                </Link>
+              ))}
+            </div>
           </div>
         </section>
 
@@ -332,7 +377,7 @@ export default function Home() {
               </p>
             </div>
             <div className="relative grid gap-3 sm:grid-cols-2">
-              <Link href="/demo" className="rounded-2xl bg-white p-5 text-ink transition hover:-translate-y-1">
+              <Link href="/doctors" className="rounded-2xl bg-white p-5 text-ink transition hover:-translate-y-1">
                 <Timer className="size-6 text-brand" />
                 <p className="mt-3 font-bold">تجربة المريض</p>
                 <p className="mt-1 text-xs text-muted">احجز موعد في أقل من 30 ثانية</p>

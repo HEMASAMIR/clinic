@@ -136,3 +136,18 @@ body {
   .js [data-reveal] { opacity: 1; transform: none; transition: none; }
   .drift { animation: none; }
 }
+
+/* ── Printing a prescription / receipt: only the .print-area shows ── */
+@media print {
+  body * { visibility: hidden !important; }
+  .print-area, .print-area * { visibility: visible !important; }
+  .print-area { position: absolute; inset: 0 0 auto 0; border: 0 !important; box-shadow: none !important; }
+}
+
+/* ── Waiting-screen ticker (RTL: text drifts in from the left) ── */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(50%); }
+}
+.marquee { display: inline-block; animation: marquee 45s linear infinite; }
+@media (prefers-reduced-motion: reduce) { .marquee { animation: none; } }
