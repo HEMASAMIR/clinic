@@ -21,8 +21,6 @@ export const metadata = {
     locale: 'ar_SA',
     type: 'website',
   },
-  // Dark Reader extension: keep our own colours.
-  other: { 'darkreader-lock': '' },
 };
 
 export const viewport = {
@@ -34,6 +32,8 @@ export default function RootLayout({ children }) {
   return (
     <html lang="ar" dir="rtl" className={`${arabic.variable} antialiased`} suppressHydrationWarning>
       <head>
+        {/* Keep our own (white) colours: tells the Dark Reader extension to leave the site alone. */}
+        <meta name="darkreader-lock" />
         {/* Scroll animations start hidden only when JS runs (see .js [data-reveal] in globals.css). */}
         <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
       </head>

@@ -130,7 +130,7 @@ export default function Home() {
             <h1 className="rise rise-2 mt-6 text-4xl font-bold leading-[1.25] sm:text-5xl lg:text-[3.1rem]">
               مرضاك يحجزون بأنفسهم..
               <br />
-              <span className="bg-gradient-to-l from-brand via-brand to-[#14a594] bg-clip-text text-transparent">
+              <span className="text-brand">
                 وعيادتك ما يفوتها موعد
               </span>
             </h1>
