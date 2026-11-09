@@ -11,6 +11,7 @@ import HeroMock from '@/components/site/HeroMock';
 import Pricing from '@/components/site/Pricing';
 import LeadForm from '@/components/site/LeadForm';
 import ScrollEffects from '@/components/site/ScrollEffects';
+import ChatWidget from '@/components/site/ChatWidget';
 import WhatsAppDemo from '@/components/site/WhatsAppDemo';
 import RoiCalculator from '@/components/site/RoiCalculator';
 import { CountUp, RotatingWord } from '@/components/site/Motion';
@@ -474,6 +475,7 @@ export default function Home() {
         </section>
       </main>
       <Footer />
+      <ChatWidget />
     </>
   );
 }
