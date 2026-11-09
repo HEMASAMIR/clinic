@@ -76,3 +76,63 @@ body {
   .rise, .floaty { animation: none; }
   html { scroll-behavior: auto; }
 }
+
+/* ── Scroll reveal (only when JS is running, so content never hides without it) ── */
+.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) var(--d, 0ms),
+    transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) var(--d, 0ms);
+  will-change: opacity, transform;
+}
+.js [data-reveal='zoom'] { transform: scale(0.94); }
+.js [data-reveal='start'] { transform: translateX(40px); }
+.js [data-reveal='end'] { transform: translateX(-40px); }
+.js [data-reveal].in { opacity: 1; transform: none; }
+
+/* ── Pointer spotlight on cards ── */
+.spot { position: relative; isolation: isolate; }
+.spot::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.3s;
+  background: radial-gradient(260px circle at var(--x, 50%) var(--y, 50%), rgb(13 122 111 / 0.10), transparent 70%);
+}
+.spot:hover::before { opacity: 1; }
+
+/* ── Range slider (ROI calculator) ── */
+.range {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 8px;
+  border-radius: 999px;
+  background: linear-gradient(to left, var(--color-brand) var(--p, 50%), var(--color-sand-deep) var(--p, 50%));
+  cursor: pointer;
+}
+.range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px; height: 22px; border-radius: 999px;
+  background: #fff; border: 3px solid var(--color-brand);
+  box-shadow: 0 2px 8px rgb(13 122 111 / 0.35);
+}
+.range::-moz-range-thumb {
+  width: 18px; height: 18px; border-radius: 999px;
+  background: #fff; border: 3px solid var(--color-brand);
+}
+
+/* ── Hero glow blobs ── */
+@keyframes drift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(30px, -20px) scale(1.08); }
+}
+.drift { animation: drift 14s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .js [data-reveal] { opacity: 1; transform: none; transition: none; }
+  .drift { animation: none; }
+}

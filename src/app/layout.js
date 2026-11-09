@@ -32,7 +32,11 @@ export const viewport = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="ar" dir="rtl" className={`${arabic.variable} antialiased`}>
+    <html lang="ar" dir="rtl" className={`${arabic.variable} antialiased`} suppressHydrationWarning>
+      <head>
+        {/* Scroll animations start hidden only when JS runs (see .js [data-reveal] in globals.css). */}
+        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
+      </head>
       <body className="min-h-dvh">{children}</body>
     </html>
   );

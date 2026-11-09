@@ -8,6 +8,7 @@ import Logo from '@/components/Logo';
 const LINKS = [
   ['#features', 'المميزات'],
   ['#industries', 'التخصصات'],
+  ['#calculator', 'احسب خسارتك'],
   ['#compare', 'ليش موعِد؟'],
   ['#pricing', 'الأسعار'],
   ['#faq', 'الأسئلة الشائعة'],

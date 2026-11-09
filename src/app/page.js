@@ -1,15 +1,28 @@
 import Link from 'next/link';
 import {
-  Activity, Apple, ArrowLeft, Baby, BarChart3, BellRing, Bone, Brain, Building2, Check, ChevronDown, CreditCard, Eye,
-  FileText, Globe, HeartPulse, LayoutDashboard, Link2, Lock, MessageCircle, QrCode, Repeat, ShieldCheck, Smartphone,
-  Smile, Sparkles, Stethoscope, Timer, X, Zap,
+  Activity, Apple, ArrowLeft, Baby, BarChart3, BellRing, Bone, Brain, Building2, Calculator, Check, ChevronDown,
+  CreditCard, Eye, FileText, Globe, HeartPulse, LayoutDashboard, Link2, Lock, MessageCircle, QrCode, Repeat,
+  ShieldCheck, Smartphone, Smile, Sparkles, Stethoscope, Timer, X, Zap,
 } from 'lucide-react';
 import Navbar from '@/components/site/Navbar';
 import Footer from '@/components/site/Footer';
 import HeroMock from '@/components/site/HeroMock';
 import Pricing from '@/components/site/Pricing';
 import LeadForm from '@/components/site/LeadForm';
+import ScrollEffects from '@/components/site/ScrollEffects';
+import WhatsAppDemo from '@/components/site/WhatsAppDemo';
+import RoiCalculator from '@/components/site/RoiCalculator';
+import { CountUp, RotatingWord } from '@/components/site/Motion';
 import { whatsappLink } from '@/config/site';
+
+const HERO_WORDS = ['عيادات الأسنان', 'الجلدية والتجميل', 'العلاج الطبيعي', 'عيادات الأطفال', 'المجمعات الطبية'];
+
+const STATS = [
+  [30, '', ' ثانية', 'يحجز فيها المريض موعده'],
+  [24, '', '/7', 'حجز مفتوح حتى والعيادة مقفلة'],
+  [48, '', ' ساعة', 'ونسلّمك نظامك جاهز'],
+  [0, '', '%', 'عمولة على مواعيدك'],
+];
 
 const PAINS = [
   ['الاستقبال ما يوقف تلفون', 'موظف الاستقبال يقضي يومه يرد على «فيه موعد مع الدكتور؟».', 'المريض يشوف مواعيد الطبيب المتاحة ويحجز بنفسه 24 ساعة.'],
@@ -65,18 +78,20 @@ const FAQ = [
   ['أقدر أجرب قبل ما أشترك؟', 'أكيد — جرّب صفحة الحجز ولوحة التحكم الآن من هذا الموقع، ولك 14 يوم تجربة مجانية على عيادتك.'],
 ];
 
+const d = (i, step = 90) => ({ '--d': `${i * step}ms` });
+
 function Mark({ v }) {
   if (v === true) return <Check className="mx-auto size-5 text-brand" aria-label="نعم" />;
   if (v === 'partial') return <span className="text-xs font-semibold text-gold">جزئي</span>;
   return <X className="mx-auto size-5 text-slate-300" aria-label="لا" />;
 }
 
-function SectionTitle({ kicker, title, sub }) {
+function SectionTitle({ kicker, title, sub, dark }) {
   return (
-    <div className="mx-auto mb-12 max-w-2xl text-center">
-      <p className="mb-3 text-sm font-bold text-brand">{kicker}</p>
+    <div className="mx-auto mb-12 max-w-2xl text-center" data-reveal="">
+      <p className={`mb-3 text-sm font-bold ${dark ? 'text-gold' : 'text-brand'}`}>{kicker}</p>
       <h2 className="text-3xl font-bold leading-tight sm:text-4xl">{title}</h2>
-      {sub && <p className="mt-4 text-lg leading-8 text-ink-soft">{sub}</p>}
+      {sub && <p className={`mt-4 text-lg leading-8 ${dark ? 'text-white/65' : 'text-ink-soft'}`}>{sub}</p>}
     </div>
   );
 }
@@ -84,18 +99,26 @@ function SectionTitle({ kicker, title, sub }) {
 export default function Home() {
   return (
     <>
-      <div className="pattern">
+      <ScrollEffects />
+      <div className="pattern relative overflow-hidden">
+        <div className="drift pointer-events-none absolute -left-32 top-10 size-[420px] rounded-full bg-brand/10 blur-3xl" />
+        <div className="drift pointer-events-none absolute -right-24 bottom-0 size-[340px] rounded-full bg-gold/10 blur-3xl [animation-delay:-6s]" />
         <Navbar />
         {/* ── Hero ── */}
-        <section className="mx-auto grid max-w-6xl items-center gap-14 px-4 pb-20 pt-10 sm:px-6 lg:grid-cols-[1.1fr_1fr] lg:pt-16">
+        <section className="relative mx-auto grid max-w-6xl items-center gap-14 px-4 pb-20 pt-10 sm:px-6 lg:grid-cols-[1.1fr_1fr] lg:pt-16">
           <div>
             <p className="rise inline-flex items-center gap-2 rounded-full border border-brand/20 bg-white px-4 py-1.5 text-sm font-semibold text-brand-dark shadow-soft">
-              <Zap className="size-4 text-gold" /> نظام مواعيد مصمم للعيادات في الخليج
+              <Zap className="size-4 text-gold" /> نظام مواعيد مصمم لـ
+              <span className="text-brand">
+                <RotatingWord words={HERO_WORDS} />
+              </span>
             </p>
             <h1 className="rise rise-2 mt-6 text-4xl font-bold leading-[1.25] sm:text-5xl lg:text-[3.1rem]">
               مرضاك يحجزون بأنفسهم..
               <br />
-              <span className="text-brand">وعيادتك ما يفوتها موعد</span>
+              <span className="bg-gradient-to-l from-brand via-brand to-[#14a594] bg-clip-text text-transparent">
+                وعيادتك ما يفوتها موعد
+              </span>
             </h1>
             <p className="rise rise-3 mt-6 max-w-xl text-lg leading-8 text-ink-soft">
               موعِد نظام حجز مواعيد متكامل للعيادات والمجمعات الطبية: رابط حجز باسم عيادتك، جدول لكل طبيب، تذكير
@@ -104,8 +127,9 @@ export default function Home() {
             <div className="rise rise-4 mt-8 flex flex-col gap-3 sm:flex-row">
               <Link
                 href="/demo"
-                className="group flex items-center justify-center gap-2 rounded-2xl bg-brand px-7 py-4 font-bold text-white shadow-lift transition hover:bg-brand-dark"
+                className="group relative flex items-center justify-center gap-2 overflow-hidden rounded-2xl bg-brand px-7 py-4 font-bold text-white shadow-lift transition hover:bg-brand-dark"
               >
+                <span className="absolute inset-0 -translate-x-full bg-gradient-to-l from-transparent via-white/25 to-transparent transition duration-700 group-hover:translate-x-full" />
                 جرّب الحجز كأنك مريض
                 <ArrowLeft className="size-4 transition group-hover:-translate-x-1" />
               </Link>
@@ -124,18 +148,34 @@ export default function Home() {
               ))}
             </ul>
           </div>
-          <HeroMock />
+          <div className="rise rise-3">
+            <HeroMock />
+          </div>
         </section>
       </div>
 
       <main>
+        {/* ── Stats ── */}
+        <section className="border-y border-line bg-sand/60">
+          <div className="mx-auto grid max-w-6xl grid-cols-2 gap-y-8 px-4 py-12 sm:px-6 lg:grid-cols-4">
+            {STATS.map(([n, pre, suf, label], i) => (
+              <div key={label} data-reveal="" style={d(i)} className="text-center">
+                <p className="text-4xl font-bold text-brand sm:text-5xl">
+                  <CountUp to={n} prefix={pre} suffix={suf} />
+                </p>
+                <p className="mt-2 text-sm text-muted">{label}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
         {/* ── Pains → solution ── */}
-        <section className="border-y border-line bg-white py-20">
+        <section className="py-24">
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
             <SectionTitle kicker="التلفون مو نظام مواعيد" title="تعبت عيادتك من إدارة المواعيد يدويًا؟" />
             <div className="grid gap-5 md:grid-cols-3">
-              {PAINS.map(([title, pain, fix]) => (
-                <div key={title} className="rounded-3xl border border-line bg-sand p-7">
+              {PAINS.map(([title, pain, fix], i) => (
+                <div key={title} data-reveal="" style={d(i, 120)} className="rounded-3xl border border-line bg-sand p-7">
                   <h3 className="text-lg font-bold">{title}</h3>
                   <p className="mt-2 text-sm leading-7 text-muted">{pain}</p>
                   <div className="mt-5 flex items-start gap-2.5 rounded-2xl bg-white p-4 text-sm font-medium leading-7 shadow-soft">
@@ -148,7 +188,7 @@ export default function Home() {
         </section>
 
         {/* ── Features ── */}
-        <section id="features" className="scroll-mt-20 py-24">
+        <section id="features" className="scroll-mt-20 bg-sand/60 py-24">
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
             <SectionTitle
               kicker="كل اللي تحتاجه عيادتك في مكان واحد"
@@ -156,12 +196,14 @@ export default function Home() {
               sub="من أول حجز للمريض لين موعد المراجعة والتقرير الشهري."
             />
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {FEATURES.map(([Icon, title, text]) => (
+              {FEATURES.map(([Icon, title, text], i) => (
                 <div
                   key={title}
-                  className="group rounded-3xl border border-line bg-white p-6 shadow-soft transition hover:-translate-y-1 hover:shadow-lift"
+                  data-reveal=""
+                  style={d(i % 4, 80)}
+                  className="spot group rounded-3xl border border-line bg-white p-6 shadow-soft transition duration-300 hover:-translate-y-1 hover:border-brand/30 hover:shadow-lift"
                 >
-                  <span className="grid size-12 place-items-center rounded-2xl bg-brand-soft text-brand transition group-hover:bg-brand group-hover:text-white">
+                  <span className="grid size-12 place-items-center rounded-2xl bg-brand-soft text-brand transition duration-300 group-hover:rotate-[-6deg] group-hover:bg-brand group-hover:text-white">
                     <Icon className="size-6" />
                   </span>
                   <h3 className="mt-5 font-bold">{title}</h3>
@@ -172,23 +214,47 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ── How it works ── */}
-        <section className="bg-ink py-24 text-white">
-          <div className="mx-auto max-w-6xl px-4 sm:px-6">
-            <div className="mx-auto mb-14 max-w-2xl text-center">
-              <p className="mb-3 text-sm font-bold text-gold">بسيطة جدًا</p>
-              <h2 className="text-3xl font-bold sm:text-4xl">3 خطوات وعيادتك تستقبل حجوزات أونلاين</h2>
+        {/* ── WhatsApp live demo ── */}
+        <section className="overflow-hidden py-24">
+          <div className="mx-auto grid max-w-6xl items-center gap-14 px-4 sm:px-6 lg:grid-cols-2">
+            <div data-reveal="start">
+              <p className="mb-3 text-sm font-bold text-brand">شوفها بعينك</p>
+              <h2 className="text-3xl font-bold leading-tight sm:text-4xl">كذا يوصل التذكير لمريضك.. ويأكد بضغطة</h2>
+              <p className="mt-4 text-lg leading-8 text-ink-soft">
+                تأكيد فوري لحظة الحجز، وتذكير قبل الموعد فيه زر «تأكيد الحضور» و«تغيير الموعد». المريض يرد بضغطة،
+                والموعد يتحدّث في جدول الطبيب تلقائيًا — بدون ولا مكالمة من الاستقبال.
+              </p>
+              <ul className="mt-6 space-y-3">
+                {['رسالة تأكيد بتفاصيل الموعد والطبيب', 'تذكير قبل الموعد بالوقت اللي تختاره', 'المريض يأكد أو يغيّر موعده بنفسه', 'الموعد الملغي يرجع متاح لمريض ثاني'].map((t, i) => (
+                  <li key={t} data-reveal="" style={d(i + 2, 100)} className="flex items-center gap-3 font-medium">
+                    <span className="grid size-7 place-items-center rounded-full bg-brand text-white"><Check className="size-4" /></span>
+                    {t}
+                  </li>
+                ))}
+              </ul>
             </div>
-            <ol className="grid gap-6 md:grid-cols-3">
+            <div data-reveal="zoom" style={d(2)}>
+              <WhatsAppDemo />
+            </div>
+          </div>
+        </section>
+
+        {/* ── How it works ── */}
+        <section className="relative overflow-hidden bg-ink py-24 text-white">
+          <div className="pointer-events-none absolute -right-40 -top-40 size-[480px] rounded-full bg-brand/25 blur-3xl" />
+          <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
+            <SectionTitle dark kicker="بسيطة جدًا" title="3 خطوات وعيادتك تستقبل حجوزات أونلاين" />
+            <ol className="relative grid gap-6 md:grid-cols-3">
+              <div className="absolute inset-x-[16%] top-[3.25rem] hidden h-px bg-gradient-to-l from-gold/0 via-gold/50 to-gold/0 md:block" />
               {STEPS.map(([title, text], i) => (
-                <li key={title} className="relative rounded-3xl border border-white/10 bg-white/5 p-7">
-                  <span className="grid size-12 place-items-center rounded-2xl bg-gold text-xl font-bold text-ink">{i + 1}</span>
+                <li key={title} data-reveal="" style={d(i, 180)} className="relative rounded-3xl border border-white/10 bg-white/5 p-7 backdrop-blur-sm">
+                  <span className="grid size-12 place-items-center rounded-2xl bg-gold text-xl font-bold text-ink shadow-[0_0_30px_rgb(201_154_46/0.45)]">{i + 1}</span>
                   <h3 className="mt-5 text-lg font-bold">{title}</h3>
                   <p className="mt-2 text-sm leading-7 text-white/65">{text}</p>
                 </li>
               ))}
             </ol>
-            <div className="mt-12 flex flex-wrap items-center justify-center gap-3 text-sm text-white/70">
+            <div data-reveal="" className="mt-12 flex flex-wrap items-center justify-center gap-3 text-sm text-white/70">
               <QrCode className="size-5 text-gold" /> رابطك جاهز لقوقل ماب والبايو والواتساب بزنس
               <Globe className="ms-4 size-5 text-gold" /> يشتغل على أي جوال بدون تحميل
             </div>
@@ -200,9 +266,14 @@ export default function Home() {
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
             <SectionTitle kicker="لكل التخصصات" title="يناسب تخصص عيادتك" />
             <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-              {SPECIALTIES.map(([Icon, title, sub]) => (
-                <div key={title} className="flex flex-col gap-3 rounded-3xl border border-line bg-white p-5 sm:flex-row sm:items-center">
-                  <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-gold-soft text-gold">
+              {SPECIALTIES.map(([Icon, title, sub], i) => (
+                <div
+                  key={title}
+                  data-reveal="zoom"
+                  style={d(i, 60)}
+                  className="spot group flex flex-col gap-3 rounded-3xl border border-line bg-white p-5 transition hover:border-gold/40 hover:shadow-soft sm:flex-row sm:items-center"
+                >
+                  <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-gold-soft text-gold transition group-hover:scale-110">
                     <Icon className="size-5" />
                   </span>
                   <div>
@@ -215,15 +286,29 @@ export default function Home() {
           </div>
         </section>
 
+        {/* ── ROI calculator ── */}
+        <section id="calculator" className="scroll-mt-20 bg-sand/60 py-24">
+          <div className="mx-auto max-w-6xl px-4 sm:px-6">
+            <SectionTitle
+              kicker={<span className="inline-flex items-center gap-1.5"><Calculator className="size-4" /> احسبها بنفسك</span>}
+              title="كم تخسر عيادتك من المرضى اللي ما يحضرون؟"
+              sub="حرّك الأرقام حسب عيادتك وشوف الفرق اللي يصنعه موعِد."
+            />
+            <div data-reveal="zoom">
+              <RoiCalculator />
+            </div>
+          </div>
+        </section>
+
         {/* ── Privacy band ── */}
-        <section className="px-4 pb-24 sm:px-6">
+        <section className="px-4 py-24 sm:px-6">
           <div className="mx-auto grid max-w-6xl gap-6 rounded-[2rem] border border-line bg-white p-8 shadow-soft sm:p-10 md:grid-cols-3">
             {[
               [Lock, 'بيانات المرضى محمية', 'اتصال مشفّر، ونسخ احتياطي، وبيانات العيادة ملكها بالكامل.'],
               [ShieldCheck, 'صلاحيات لكل موظف', 'الاستقبال يشوف المواعيد، والطبيب يشوف جدوله، والإدارة تشوف التقارير.'],
               [Activity, 'سجل لكل عملية', 'تعرف مين حجز ومين عدّل أو ألغى أي موعد ومتى.'],
-            ].map(([Icon, title, text]) => (
-              <div key={title} className="flex items-start gap-4">
+            ].map(([Icon, title, text], i) => (
+              <div key={title} data-reveal="" style={d(i, 120)} className="flex items-start gap-4">
                 <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-brand text-white">
                   <Icon className="size-5" />
                 </span>
@@ -238,14 +323,15 @@ export default function Home() {
 
         {/* ── Live demo band ── */}
         <section className="px-4 sm:px-6">
-          <div className="mx-auto grid max-w-6xl gap-5 rounded-[2rem] bg-gradient-to-bl from-brand to-brand-dark p-8 text-white shadow-lift sm:p-12 lg:grid-cols-[1.2fr_1fr] lg:items-center">
-            <div>
+          <div data-reveal="zoom" className="relative mx-auto grid max-w-6xl gap-5 overflow-hidden rounded-[2rem] bg-gradient-to-bl from-brand to-brand-dark p-8 text-white shadow-lift sm:p-12 lg:grid-cols-[1.2fr_1fr] lg:items-center">
+            <div className="drift pointer-events-none absolute -left-16 -top-16 size-72 rounded-full bg-white/10 blur-2xl" />
+            <div className="relative">
               <h2 className="text-3xl font-bold leading-tight">لا تصدّق كلامنا.. جرّب بنفسك الآن</h2>
               <p className="mt-4 leading-8 text-white/75">
                 احجز موعد في «عيادات رِفق» التجريبية كأنك مريض، وبعدها افتح لوحة العيادة وشوف موعدك نزل في جدول الطبيب فورًا.
               </p>
             </div>
-            <div className="grid gap-3 sm:grid-cols-2">
+            <div className="relative grid gap-3 sm:grid-cols-2">
               <Link href="/demo" className="rounded-2xl bg-white p-5 text-ink transition hover:-translate-y-1">
                 <Timer className="size-6 text-brand" />
                 <p className="mt-3 font-bold">تجربة المريض</p>
@@ -264,7 +350,7 @@ export default function Home() {
         <section id="compare" className="scroll-mt-20 py-24">
           <div className="mx-auto max-w-4xl px-4 sm:px-6">
             <SectionTitle kicker="ليش موعِد؟" title="الفرق واضح من أول نظرة" />
-            <div className="overflow-x-auto rounded-3xl border border-line bg-white shadow-soft">
+            <div data-reveal="" className="overflow-x-auto rounded-3xl border border-line bg-white shadow-soft">
               <table className="w-full min-w-[560px] text-sm">
                 <thead>
                   <tr className="border-b border-line text-xs text-muted">
@@ -276,7 +362,7 @@ export default function Home() {
                 </thead>
                 <tbody>
                   {COMPARE.map(([label, a, b, c]) => (
-                    <tr key={label} className="border-b border-line/60 last:border-0">
+                    <tr key={label} className="border-b border-line/60 transition last:border-0 hover:bg-sand/60">
                       <td className="p-4 font-medium">{label}</td>
                       <td className="bg-brand-soft/50 p-4 text-center"><Mark v={a} /></td>
                       <td className="p-4 text-center"><Mark v={b} /></td>
@@ -290,10 +376,12 @@ export default function Home() {
         </section>
 
         {/* ── Pricing ── */}
-        <section id="pricing" className="scroll-mt-20 border-y border-line bg-white py-24">
+        <section id="pricing" className="scroll-mt-20 border-y border-line bg-sand/60 py-24">
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
             <SectionTitle kicker="أسعار واضحة بالريال" title="باقة تناسب حجم عيادتك" sub="بدون رسوم خفية وبدون عمولة على مواعيدك." />
-            <Pricing />
+            <div data-reveal="">
+              <Pricing />
+            </div>
           </div>
         </section>
 
@@ -302,8 +390,8 @@ export default function Home() {
           <div className="mx-auto max-w-3xl px-4 sm:px-6">
             <SectionTitle kicker="عندك سؤال؟" title="الأسئلة الشائعة" />
             <div className="space-y-3">
-              {FAQ.map(([q, a]) => (
-                <details key={q} className="group rounded-2xl border border-line bg-white px-6 py-1 shadow-soft open:shadow-lift">
+              {FAQ.map(([q, a], i) => (
+                <details key={q} data-reveal="" style={d(i, 60)} className="group rounded-2xl border border-line bg-white px-6 py-1 shadow-soft open:shadow-lift">
                   <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-4 font-bold [&::-webkit-details-marker]:hidden">
                     {q}
                     <ChevronDown className="size-5 shrink-0 text-muted transition group-open:rotate-180" />
@@ -317,8 +405,9 @@ export default function Home() {
 
         {/* ── Contact ── */}
         <section id="contact" className="scroll-mt-20 px-4 pb-24 sm:px-6">
-          <div className="mx-auto grid max-w-6xl gap-10 rounded-[2rem] bg-ink p-8 text-white sm:p-12 lg:grid-cols-2 lg:items-center">
-            <div>
+          <div data-reveal="" className="relative mx-auto grid max-w-6xl gap-10 overflow-hidden rounded-[2rem] bg-ink p-8 text-white sm:p-12 lg:grid-cols-2 lg:items-center">
+            <div className="drift pointer-events-none absolute -bottom-24 -right-24 size-80 rounded-full bg-brand/30 blur-3xl" />
+            <div className="relative">
               <HeartPulse className="size-10 text-gold" />
               <h2 className="mt-5 text-3xl font-bold leading-tight sm:text-4xl">جاهز تنظّم مواعيد عيادتك؟</h2>
               <p className="mt-4 leading-8 text-white/70">
@@ -333,7 +422,9 @@ export default function Home() {
                 <MessageCircle className="size-4 text-gold" /> أو كلّمنا واتساب مباشرة
               </a>
             </div>
-            <LeadForm />
+            <div className="relative">
+              <LeadForm />
+            </div>
           </div>
         </section>
       </main>
