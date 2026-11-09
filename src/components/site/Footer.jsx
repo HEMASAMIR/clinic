@@ -14,8 +14,8 @@ export default function Footer() {
         <div>
           <h3 className="mb-4 text-sm font-semibold text-white">المنتج</h3>
           <ul className="space-y-2.5 text-sm">
-            <li><Link href="/demo" className="hover:text-white">تجربة الحجز</Link></li>
-            <li><Link href="/dashboard" className="hover:text-white">لوحة التحكم</Link></li>
+            <li><Link href="/demo" className="hover:text-white">تجربة حجز المريض</Link></li>
+            <li><Link href="/dashboard" className="hover:text-white">لوحة العيادة</Link></li>
             <li><Link href="/#pricing" className="hover:text-white">الأسعار</Link></li>
             <li><Link href="/#faq" className="hover:text-white">الأسئلة الشائعة</Link></li>
           </ul>
@@ -39,7 +39,7 @@ export default function Footer() {
       <div className="border-t border-white/10">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-2 px-4 py-5 text-xs sm:flex-row sm:px-6">
           <span>© {site.name} — جميع الحقوق محفوظة</span>
-          <span>صُنع بعناية لأسواق الخليج 🇸🇦 🇦🇪 🇰🇼 🇶🇦 🇧🇭 🇴🇲</span>
+          <span>صُنع بعناية لعيادات الخليج 🇸🇦 🇦🇪 🇰🇼 🇶🇦 🇧🇭 🇴🇲</span>
         </div>
       </div>
     </footer>

@@ -27,7 +27,7 @@ export default function Services({ state }) {
     <div className="rise">
       <PageHead
         title="الخدمات"
-        sub="الأسعار والمدد اللي تظهر لعملائك في صفحة الحجز"
+        sub="الخدمات والأسعار والمدد اللي تظهر لمرضاك في صفحة الحجز"
         action={<Button onClick={() => setEditing({})}><Plus className="size-4" /> خدمة جديدة</Button>}
       />
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">

@@ -35,15 +35,15 @@ export default function Overview({ state, goTo }) {
   });
 
   const kpis = [
-    [CalendarCheck, 'حجوزات اليوم', todays.length, 'bg-brand-soft text-brand'],
+    [CalendarCheck, 'مواعيد اليوم', todays.length, 'bg-brand-soft text-brand'],
     [Wallet, 'إيراد اليوم المتوقع', money(todays.reduce((t, b) => t + price(b), 0)), 'bg-gold-soft text-gold'],
-    [TrendingUp, 'حجوزات آخر 7 أيام', weekBookings.length, 'bg-violet-50 text-violet-600'],
-    [UserCheck, 'نسبة الحضور', `${attendance}%`, 'bg-emerald-50 text-emerald-600'],
+    [TrendingUp, 'مواعيد آخر 7 أيام', weekBookings.length, 'bg-violet-50 text-violet-600'],
+    [UserCheck, 'نسبة حضور المرضى', `${attendance}%`, 'bg-emerald-50 text-emerald-600'],
   ];
 
   return (
     <div className="rise">
-      <PageHead title="أهلًا 👋" sub={fmtLongDate(now)} />
+      <PageHead title="صباح الخير 👋" sub={`${state.business.name} — ${fmtLongDate(now)}`} />
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         {kpis.map(([Icon, label, value, cls]) => (
@@ -60,7 +60,7 @@ export default function Overview({ state, goTo }) {
       <div className="mt-4 grid gap-4 lg:grid-cols-[1.4fr_1fr]">
         <Card>
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="font-bold">المواعيد القادمة اليوم</h2>
+            <h2 className="font-bold">المرضى القادمون اليوم</h2>
             <button type="button" onClick={() => goTo('calendar')} className="flex items-center gap-1 text-xs font-bold text-brand">
               التقويم <ArrowLeft className="size-3.5" />
             </button>
@@ -78,7 +78,7 @@ export default function Overview({ state, goTo }) {
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-bold">{b.customer.name}</p>
                       <p className="truncate text-xs text-muted">
-                        {s?.name} · مع {staffById(state, b.staffId)?.name}
+                        {s?.name} · {staffById(state, b.staffId)?.name}{b.visit === 'followup' ? ' · مراجعة' : ''}
                       </p>
                     </div>
                     <StatusBadge status={b.status} />
@@ -91,8 +91,8 @@ export default function Overview({ state, goTo }) {
 
         <div className="grid gap-4">
           <Card>
-            <h2 className="mb-1 font-bold">الحجوزات خلال الأسبوع</h2>
-            <p className="mb-4 text-xs text-muted">{fromLink} منها جت من رابط الحجز بدون أي مكالمة</p>
+            <h2 className="mb-1 font-bold">المواعيد خلال الأسبوع</h2>
+            <p className="mb-4 text-xs text-muted">{fromLink} منها حجزها المرضى بأنفسهم من الرابط</p>
             <div className="flex h-36 items-end gap-2" role="img" aria-label="عدد الحجوزات لكل يوم في آخر 7 أيام">
               {perDay.map(({ d, n }) => (
                 <div key={d} className="flex flex-1 flex-col items-center gap-1.5">
@@ -107,7 +107,7 @@ export default function Overview({ state, goTo }) {
             </div>
           </Card>
           <Card>
-            <h2 className="mb-4 font-bold">الأكثر طلبًا</h2>
+            <h2 className="mb-4 font-bold">الخدمات الأكثر طلبًا</h2>
             <ul className="space-y-3">
               {top.map(({ s, n }) => (
                 <li key={s.id}>

@@ -7,7 +7,7 @@ import Logo from '@/components/Logo';
 
 const LINKS = [
   ['#features', 'المميزات'],
-  ['#industries', 'المجالات'],
+  ['#industries', 'التخصصات'],
   ['#compare', 'ليش موعِد؟'],
   ['#pricing', 'الأسعار'],
   ['#faq', 'الأسئلة الشائعة'],
@@ -43,7 +43,7 @@ export default function Navbar() {
         </ul>
         <div className="hidden items-center gap-2 lg:flex">
           <Link href="/dashboard" className="rounded-full px-4 py-2 text-sm font-semibold text-ink-soft transition hover:text-brand">
-            لوحة التحكم
+            لوحة العيادة
           </Link>
           <Link
             href="/demo"
@@ -75,7 +75,7 @@ export default function Navbar() {
           </ul>
           <div className="mt-4 grid grid-cols-2 gap-2">
             <Link href="/dashboard" className="rounded-xl border border-line bg-white py-3 text-center text-sm font-semibold">
-              لوحة التحكم
+              لوحة العيادة
             </Link>
             <Link href="/demo" className="rounded-xl bg-brand py-3 text-center text-sm font-semibold text-white">
               جرّب الحجز

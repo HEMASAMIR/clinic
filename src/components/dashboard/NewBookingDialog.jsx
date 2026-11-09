@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { addBooking, fmtTime, freeSlots, staffFor, ymd } from '@/lib/demo-store';
+import { addBooking, fmtTime, freeSlots, staffFor, VISIT, ymd } from '@/lib/demo-store';
 import { Button, Field, Modal, inputCls } from './ui';
 
 /** Walk-in / phone booking entered by the owner — same rules as the online page (no double booking). */
@@ -12,6 +12,7 @@ export default function NewBookingDialog({ state, onClose }) {
   const [time, setTime] = useState('');
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
+  const [visit, setVisit] = useState('first');
   const [error, setError] = useState('');
 
   const slots = useMemo(
@@ -23,9 +24,9 @@ export default function NewBookingDialog({ state, onClose }) {
     e.preventDefault();
     const slot = slots.find((s) => s.time === time);
     if (!slot) return setError('اختر وقتًا متاحًا.');
-    if (name.trim().length < 2) return setError('اكتب اسم العميل.');
+    if (name.trim().length < 2) return setError('اكتب اسم المريض.');
     try {
-      addBooking({ date, time, serviceId, staffId: slot.staffId, customer: { name: name.trim(), phone: phone.trim() }, source: 'walkin' });
+      addBooking({ date, time, serviceId, staffId: slot.staffId, customer: { name: name.trim(), phone: phone.trim() }, visit, source: 'walkin' });
       onClose();
     } catch (err) {
       setError(err.message);
@@ -33,7 +34,7 @@ export default function NewBookingDialog({ state, onClose }) {
   };
 
   return (
-    <Modal title="حجز يدوي جديد" onClose={onClose}>
+    <Modal title="موعد جديد من الاستقبال" onClose={onClose}>
       <form onSubmit={save} className="grid gap-4">
         <Field label="الخدمة">
           <select
@@ -53,9 +54,9 @@ export default function NewBookingDialog({ state, onClose }) {
           </select>
         </Field>
         <div className="grid grid-cols-2 gap-3">
-          <Field label="الموظف">
+          <Field label="الطبيب">
             <select className={inputCls} value={staffId} onChange={(e) => { setStaffId(e.target.value); setTime(''); }}>
-              <option value="">أي موظف متاح</option>
+              <option value="">أول طبيب متاح</option>
               {staffFor(state, serviceId).map((p) => (
                 <option key={p.id} value={p.id}>{p.name}</option>
               ))}
@@ -81,15 +82,20 @@ export default function NewBookingDialog({ state, onClose }) {
           </div>
         </Field>
         <div className="grid grid-cols-2 gap-3">
-          <Field label="اسم العميل">
+          <Field label="اسم المريض">
             <input className={inputCls} value={name} onChange={(e) => setName(e.target.value)} maxLength={50} />
           </Field>
           <Field label="الجوال">
             <input dir="ltr" inputMode="tel" className={`${inputCls} text-right`} value={phone} onChange={(e) => setPhone(e.target.value)} maxLength={16} placeholder="05XXXXXXXX" />
           </Field>
         </div>
+        <Field label="نوع الزيارة">
+          <select className={inputCls} value={visit} onChange={(e) => setVisit(e.target.value)}>
+            {Object.entries(VISIT).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
+          </select>
+        </Field>
         {error && <p className="rounded-xl bg-rose-50 p-3 text-sm text-rose-600">{error}</p>}
-        <Button type="submit" className="py-3">حفظ الحجز</Button>
+        <Button type="submit" className="py-3">حفظ الموعد</Button>
       </form>
     </Modal>
   );

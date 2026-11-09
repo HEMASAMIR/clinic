@@ -38,7 +38,7 @@ export default function CalendarView({ state }) {
 
       <Card className="!p-0">
         {!hours ? (
-          <p className="p-10 text-center text-muted">النشاط مغلق في هذا اليوم.</p>
+          <p className="p-10 text-center text-muted">العيادة مغلقة في هذا اليوم.</p>
         ) : (
           <div className="overflow-x-auto">
             <div className="min-w-[640px]">
@@ -46,7 +46,7 @@ export default function CalendarView({ state }) {
                 <div />
                 {state.staff.map((p) => (
                   <div key={p.id} className="flex items-center gap-2 border-r border-line p-3">
-                    <span className="grid size-8 place-items-center rounded-xl bg-brand-soft text-sm font-bold text-brand">{p.name[0]}</span>
+                    <span className="grid size-8 place-items-center rounded-xl bg-brand-soft text-sm font-bold text-brand">{p.name.replace('د. ', '')[0]}</span>
                     <div>
                       <p className="text-sm font-bold">{p.name}</p>
                       <p className="text-[10px] text-muted">{p.off.includes(day.getDay()) ? 'إجازة اليوم' : p.role}</p>

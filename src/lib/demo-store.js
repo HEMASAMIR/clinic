@@ -1,12 +1,12 @@
 'use client';
 
-// Demo data for the live booking page and the owner dashboard. Kept in the visitor's browser
+// Demo clinic data for the live booking page and the clinic dashboard. Kept in the visitor's browser
 // (localStorage), so every visitor gets their own sandbox: a booking made on /demo shows up
 // on /dashboard right away — even across tabs.
 
 import { useSyncExternalStore } from 'react';
 
-const KEY = 'mawid-demo-v1';
+const KEY = 'mawid-clinic-v1';
 
 export const SLOT_STEP = 30; // minutes
 
@@ -41,41 +41,42 @@ export const fmtTime = (hhmm) => {
 };
 
 // ── seed ──────────────────────────────────────────────────────────────────────
-// Weekday index: 0 = Sunday … 5 = Friday, 6 = Saturday.
+// Weekday index: 0 = Sunday … 5 = Friday, 6 = Saturday. null = closed.
 const HOURS = {
-  0: ['10:00', '22:00'],
-  1: ['10:00', '22:00'],
-  2: ['10:00', '22:00'],
-  3: ['10:00', '22:00'],
-  4: ['10:00', '23:00'],
-  5: ['16:00', '23:00'],
-  6: ['10:00', '22:00'],
+  0: ['09:00', '21:00'],
+  1: ['09:00', '21:00'],
+  2: ['09:00', '21:00'],
+  3: ['09:00', '21:00'],
+  4: ['09:00', '21:00'],
+  5: null,
+  6: ['10:00', '18:00'],
 };
 
 const SERVICES = [
-  { id: 's1', name: 'قص وتصفيف', category: 'الشعر', duration: 45, price: 120, color: '#0d7a6f' },
-  { id: 's2', name: 'صبغة كاملة', category: 'الشعر', duration: 120, price: 380, color: '#c99a2e' },
-  { id: 's3', name: 'بروتين وعلاج', category: 'الشعر', duration: 90, price: 450, color: '#7c5cbf' },
-  { id: 's4', name: 'مانيكير وباديكير', category: 'الأظافر', duration: 60, price: 160, color: '#d9536f' },
-  { id: 's5', name: 'تنظيف بشرة', category: 'البشرة', duration: 60, price: 220, color: '#2f80c9' },
-  { id: 's6', name: 'مكياج سهرة', category: 'المكياج', duration: 75, price: 350, color: '#b8573a' },
+  { id: 's1', name: 'كشف أسنان', category: 'الأسنان', duration: 30, price: 150, color: '#0d7a6f' },
+  { id: 's2', name: 'تنظيف وتلميع', category: 'الأسنان', duration: 45, price: 250, color: '#2f80c9' },
+  { id: 's3', name: 'حشو تجميلي', category: 'الأسنان', duration: 60, price: 400, color: '#7c5cbf' },
+  { id: 's4', name: 'تبييض الأسنان', category: 'الأسنان', duration: 90, price: 1200, color: '#c99a2e' },
+  { id: 's5', name: 'كشف جلدية', category: 'الجلدية والتجميل', duration: 30, price: 200, color: '#d9536f' },
+  { id: 's6', name: 'جلسة ليزر', category: 'الجلدية والتجميل', duration: 45, price: 600, color: '#b8573a' },
+  { id: 's7', name: 'استشارة تجميل', category: 'الجلدية والتجميل', duration: 30, price: 150, color: '#3f9b6b' },
 ];
 
 const STAFF = [
-  { id: 'e1', name: 'نورة', role: 'خبيرة شعر', services: ['s1', 's2', 's3'], off: [5] },
-  { id: 'e2', name: 'ريم', role: 'أخصائية بشرة وأظافر', services: ['s4', 's5'], off: [0] },
-  { id: 'e3', name: 'هيا', role: 'خبيرة مكياج وشعر', services: ['s1', 's6'], off: [] },
+  { id: 'e1', name: 'د. خالد العمري', role: 'استشاري طب الأسنان', services: ['s1', 's2', 's3'], off: [6] },
+  { id: 'e2', name: 'د. نوف القحطاني', role: 'أخصائية تجميل الأسنان', services: ['s1', 's2', 's3', 's4'], off: [0] },
+  { id: 'e3', name: 'د. فهد الحربي', role: 'استشاري الجلدية والليزر', services: ['s5', 's6', 's7'], off: [] },
 ];
 
-const CUSTOMERS = [
-  ['سارة العتيبي', '0501234567'],
-  ['منيرة القحطاني', '0559876543'],
-  ['لمى الشمري', '0543217788'],
-  ['جود الحربي', '0532224411'],
-  ['دانة المطيري', '0566781234'],
-  ['شهد الدوسري', '0517654321'],
-  ['عبير الزهراني', '0581112233'],
-  ['رهف السبيعي', '0598887766'],
+const PATIENTS = [
+  ['محمد العتيبي', '0501234567'],
+  ['سارة القحطاني', '0559876543'],
+  ['عبدالله الشمري', '0543217788'],
+  ['نورة الحربي', '0532224411'],
+  ['فيصل المطيري', '0566781234'],
+  ['ريم الدوسري', '0517654321'],
+  ['تركي الزهراني', '0581112233'],
+  ['لمى السبيعي', '0598887766'],
 ];
 
 let seq = 0;
@@ -86,22 +87,24 @@ function seed() {
   const bookings = [];
   // A believable week around today: past days done, today busy, coming days filling up.
   const plan = [
-    [-6, '12:00', 's1', 'e1', 'done'], [-6, '17:00', 's5', 'e2', 'done'], [-6, '20:00', 's6', 'e3', 'done'],
-    [-5, '11:00', 's4', 'e2', 'done'], [-5, '18:00', 's2', 'e1', 'done'],
-    [-4, '13:00', 's1', 'e3', 'done'], [-4, '16:30', 's3', 'e1', 'done'], [-4, '19:00', 's4', 'e2', 'done'], [-4, '21:00', 's1', 'e3', 'no_show'],
-    [-3, '11:00', 's1', 'e1', 'done'], [-3, '13:00', 's4', 'e2', 'done'], [-3, '17:00', 's6', 'e3', 'done'],
-    [-2, '12:00', 's2', 'e1', 'done'], [-2, '16:00', 's5', 'e2', 'no_show'], [-2, '19:00', 's1', 'e3', 'done'],
-    [-1, '10:30', 's3', 'e1', 'done'], [-1, '15:00', 's4', 'e2', 'done'], [-1, '18:00', 's6', 'e3', 'cancelled'],
-    [0, '10:00', 's1', 'e1', 'confirmed'], [0, '11:30', 's4', 'e2', 'confirmed'], [0, '13:00', 's2', 'e1', 'confirmed'],
-    [0, '16:00', 's5', 'e2', 'confirmed'], [0, '17:30', 's6', 'e3', 'confirmed'], [0, '20:00', 's1', 'e3', 'confirmed'],
-    [1, '12:00', 's3', 'e1', 'confirmed'], [1, '18:30', 's4', 'e2', 'confirmed'],
-    [2, '11:00', 's1', 'e3', 'confirmed'], [2, '17:00', 's2', 'e1', 'confirmed'],
-    [3, '19:00', 's6', 'e3', 'confirmed'],
+    [-6, '10:00', 's1', 'e1', 'done'], [-6, '12:00', 's5', 'e3', 'done'], [-6, '16:00', 's4', 'e2', 'done'],
+    [-5, '11:00', 's2', 'e2', 'done'], [-5, '15:00', 's6', 'e3', 'done'],
+    [-4, '10:30', 's3', 'e1', 'done'], [-4, '13:00', 's7', 'e3', 'done'], [-4, '16:30', 's1', 'e2', 'done'], [-4, '17:30', 's5', 'e3', 'no_show'],
+    [-3, '11:00', 's1', 'e1', 'done'], [-3, '13:00', 's2', 'e2', 'done'], [-3, '17:00', 's6', 'e3', 'done'],
+    [-2, '12:00', 's4', 'e2', 'done'], [-2, '14:00', 's5', 'e3', 'no_show'], [-2, '16:00', 's1', 'e1', 'done'],
+    [-1, '10:30', 's3', 'e1', 'done'], [-1, '15:00', 's1', 'e2', 'done'], [-1, '16:00', 's7', 'e3', 'cancelled'],
+    [0, '10:00', 's1', 'e1', 'confirmed'], [0, '11:30', 's2', 'e2', 'confirmed'], [0, '13:00', 's3', 'e1', 'confirmed'],
+    [0, '14:00', 's6', 'e3', 'confirmed'], [0, '16:30', 's5', 'e3', 'confirmed'], [0, '17:00', 's4', 'e2', 'confirmed'],
+    [1, '12:00', 's3', 'e1', 'confirmed'], [1, '15:30', 's2', 'e2', 'confirmed'],
+    [2, '11:00', 's5', 'e3', 'confirmed'], [2, '16:00', 's1', 'e1', 'confirmed'],
+    [3, '13:00', 's6', 'e3', 'confirmed'],
   ];
   plan.forEach(([offset, time, serviceId, staffId, status], i) => {
     const date = addDays(today, offset);
-    if (STAFF.find((s) => s.id === staffId).off.includes(date.getDay())) return;
-    const [name, phone] = CUSTOMERS[i % CUSTOMERS.length];
+    const hours = HOURS[date.getDay()];
+    if (!hours || STAFF.find((s) => s.id === staffId).off.includes(date.getDay())) return;
+    if (toMin(time) < toMin(hours[0]) || toMin(time) >= toMin(hours[1])) return;
+    const [name, phone] = PATIENTS[i % PATIENTS.length];
     bookings.push({
       id: uid(),
       date: ymd(date),
@@ -109,6 +112,7 @@ function seed() {
       serviceId,
       staffId,
       customer: { name, phone },
+      visit: i % 3 === 0 ? 'followup' : 'first',
       status,
       source: i % 4 === 0 ? 'walkin' : 'link',
       createdAt: addDays(date, -2).toISOString(),
@@ -116,10 +120,10 @@ function seed() {
   });
   return {
     business: {
-      name: 'صالون لمسة',
-      city: 'الرياض — حي الملقا',
+      name: 'عيادات رِفق الطبية',
+      city: 'الرياض — حي النرجس',
       phone: '0112345678',
-      slug: 'lamsa',
+      slug: 'rifq',
       hours: HOURS,
       reminders: true,
       deposit: false,
@@ -236,14 +240,14 @@ export function freeSlots(state, { date, serviceId, staffId = null, now = new Da
   return out;
 }
 
-export function addBooking({ date, time, serviceId, staffId, customer, source = 'link' }) {
+export function addBooking({ date, time, serviceId, staffId, customer, visit = 'first', note = '', source = 'link' }) {
   const id = uid();
   update((s) => {
     const service = serviceById(s, serviceId);
     if (!service || busy(s, staffId, date, toMin(time), toMin(time) + service.duration)) {
       throw new Error('هذا الموعد لم يعد متاحًا، اختر وقتًا آخر.');
     }
-    s.bookings.push({ id, date, time, serviceId, staffId, customer, status: 'confirmed', source, createdAt: new Date().toISOString() });
+    s.bookings.push({ id, date, time, serviceId, staffId, customer, visit, note, status: 'confirmed', source, createdAt: new Date().toISOString() });
     return s;
   });
   return id;
@@ -265,3 +269,5 @@ export const STATUS = {
 };
 
 export const money = (n) => `${Number(n).toLocaleString('en-US')} ر.س`;
+
+export const VISIT = { first: 'زيارة أولى', followup: 'مراجعة' };

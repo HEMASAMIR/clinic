@@ -45,17 +45,17 @@ export default function SettingsView({ state }) {
         </Card>
 
         <Card>
-          <h2 className="mb-4 font-bold">بيانات النشاط</h2>
+          <h2 className="mb-4 font-bold">بيانات العيادة</h2>
           <div className="grid gap-3">
-            <Field label="اسم النشاط"><input className={inputCls} value={b.name} onChange={(e) => setBiz('name', e.target.value)} maxLength={40} /></Field>
+            <Field label="اسم العيادة"><input className={inputCls} value={b.name} onChange={(e) => setBiz('name', e.target.value)} maxLength={40} /></Field>
             <Field label="الموقع"><input className={inputCls} value={b.city} onChange={(e) => setBiz('city', e.target.value)} maxLength={60} /></Field>
           </div>
         </Card>
 
         <Card>
           <h2 className="mb-4 font-bold">التنبيهات والدفع</h2>
-          <Toggle label="تذكير العملاء تلقائيًا قبل الموعد بساعتين" on={b.reminders} onChange={(v) => setBiz('reminders', v)} />
-          <Toggle label="طلب عربون عند الحجز (مدى / Apple Pay / STC Pay)" on={b.deposit} onChange={(v) => setBiz('deposit', v)} />
+          <Toggle label="تذكير المرضى تلقائيًا قبل الموعد" on={b.reminders} onChange={(v) => setBiz('reminders', v)} />
+          <Toggle label="دفع قيمة الكشف أو عربون عند الحجز (مدى / Apple Pay / STC Pay)" on={b.deposit} onChange={(v) => setBiz('deposit', v)} />
         </Card>
 
         <Card>

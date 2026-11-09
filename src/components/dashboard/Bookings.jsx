@@ -29,7 +29,7 @@ export default function Bookings({ state }) {
 
   return (
     <div className="rise">
-      <PageHead title="الحجوزات" sub={`${list.length} حجز`} />
+      <PageHead title="المواعيد" sub={`${list.length} موعد`} />
       <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="no-scrollbar flex gap-1 overflow-x-auto rounded-2xl border border-line bg-white p-1">
           {FILTERS.map(([key, label]) => (
@@ -51,7 +51,7 @@ export default function Bookings({ state }) {
 
       <Card className="!p-0">
         {list.length === 0 ? (
-          <Empty icon={ClipboardList} text="ما فيه حجوزات هنا." />
+          <Empty icon={ClipboardList} text="ما فيه مواعيد هنا." />
         ) : (
           <ul className="divide-y divide-line">
             {list.map((b) => {
@@ -63,11 +63,13 @@ export default function Bookings({ state }) {
                     <div className="min-w-0">
                       <p className="flex items-center gap-2 font-bold">
                         <span className="truncate">{b.customer.name}</span>
-                        {b.source === 'walkin' && <span className="rounded-md bg-sand px-1.5 text-[10px] font-semibold text-muted">يدوي</span>}
+                        {b.visit === 'followup' && <span className="rounded-md bg-violet-50 px-1.5 text-[10px] font-semibold text-violet-600">مراجعة</span>}
+                        {b.source === 'walkin' && <span className="rounded-md bg-sand px-1.5 text-[10px] font-semibold text-muted">استقبال</span>}
                       </p>
                       <p className="truncate text-xs text-muted">
                         {s?.name} · {staffById(state, b.staffId)?.name} · {money(s?.price || 0)}
                       </p>
+                      {b.note && <p className="mt-0.5 truncate text-[11px] text-ink-soft">📝 {b.note}</p>}
                     </div>
                   </div>
                   <div className="flex items-center justify-between gap-3 sm:justify-end">

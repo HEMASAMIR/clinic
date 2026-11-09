@@ -3,36 +3,37 @@
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import {
-  ArrowLeft, ArrowRight, CalendarCheck, CalendarDays, Check, Clock, LayoutDashboard, MapPin, Phone, Sparkles, Star, User,
+  ArrowLeft, ArrowRight, CalendarCheck, CalendarDays, Check, Clock, FileText, LayoutDashboard, MapPin, Phone, Sparkles, Star,
+  Stethoscope, User,
 } from 'lucide-react';
 import {
   addBooking, addDays, fmtDate, fmtDay, fmtLongDate, fmtTime, freeSlots, money, parseYmd, serviceById, staffById,
-  staffFor, useDemo, ymd,
+  staffFor, useDemo, VISIT, ymd,
 } from '@/lib/demo-store';
 import { LogoMark } from '@/components/Logo';
 
-const STEPS = ['الخدمة', 'الموظفة', 'الموعد', 'بياناتك'];
+const STEPS = ['الخدمة', 'الطبيب', 'الموعد', 'بياناتك'];
 const DAYS_AHEAD = 14;
 
 function Shell({ children, business }) {
   return (
     <div className="min-h-dvh bg-sand">
       <div className="bg-ink px-4 py-2.5 text-center text-xs text-white/80">
-        هذه صفحة تجريبية من <b className="text-gold">موعِد</b> — احجز كأنك عميل، ثم افتح{' '}
+        هذه صفحة تجريبية من <b className="text-gold">موعِد</b> — احجز كأنك مريض، ثم افتح{' '}
         <Link href="/dashboard" className="font-bold text-white underline underline-offset-4">
-          لوحة التحكم
+          لوحة العيادة
         </Link>{' '}
-        لترى حجزك.
+        لترى موعدك.
       </div>
       <header className="bg-gradient-to-bl from-brand to-brand-dark text-white">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-6 sm:px-6">
           <div className="flex items-center gap-4">
-            <div className="grid size-14 place-items-center rounded-2xl bg-white/15 text-2xl font-bold ring-1 ring-white/25">ل</div>
+            <div className="grid size-14 place-items-center rounded-2xl bg-white/15 ring-1 ring-white/25"><Stethoscope className="size-7" /></div>
             <div>
-              <h1 className="text-xl font-bold">{business?.name || 'صالون لمسة'}</h1>
+              <h1 className="text-xl font-bold">{business?.name || 'عيادات رِفق الطبية'}</h1>
               <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-white/75">
                 <span className="flex items-center gap-1"><MapPin className="size-3.5" /> {business?.city || 'الرياض'}</span>
-                <span className="flex items-center gap-1"><Star className="size-3.5 fill-gold text-gold" /> صالون نسائي</span>
+                <span className="flex items-center gap-1"><Star className="size-3.5 fill-gold text-gold" /> أسنان · جلدية وتجميل</span>
               </p>
             </div>
           </div>
@@ -54,6 +55,8 @@ export default function BookingFlow() {
   const [date, setDate] = useState(null);
   const [slot, setSlot] = useState(null);
   const [customer, setCustomer] = useState({ name: '', phone: '' });
+  const [visit, setVisit] = useState('first');
+  const [note, setNote] = useState('');
   const [error, setError] = useState('');
   const [doneId, setDoneId] = useState(null);
 
@@ -92,12 +95,12 @@ export default function BookingFlow() {
   const confirm = (e) => {
     e.preventDefault();
     const phone = customer.phone.replace(/\s/g, '');
-    if (customer.name.trim().length < 2) return setError('اكتبي اسمك من فضلك.');
+    if (customer.name.trim().length < 2) return setError('اكتب اسم المريض من فضلك.');
     if (!/^(05\d{8}|\+?9665\d{8}|\+?971\d{8,9}|\+?965\d{8}|\+?974\d{8}|\+?973\d{8}|\+?968\d{8})$/.test(phone)) {
-      return setError('اكتبي رقم جوال صحيح، مثل 05XXXXXXXX');
+      return setError('اكتب رقم جوال صحيح، مثل 05XXXXXXXX');
     }
     try {
-      const id = addBooking({ date, time: slot.time, serviceId, staffId: slot.staffId, customer: { name: customer.name.trim(), phone } });
+      const id = addBooking({ date, time: slot.time, serviceId, staffId: slot.staffId, customer: { name: customer.name.trim(), phone }, visit, note: note.trim() });
       setDoneId(id);
     } catch (err) {
       setError(err.message);
@@ -115,17 +118,17 @@ export default function BookingFlow() {
             <span className="mx-auto grid size-16 place-items-center rounded-full bg-brand text-white">
               <Check className="size-8" />
             </span>
-            <h2 className="mt-5 text-2xl font-bold">تم تأكيد حجزك 🎉</h2>
-            <p className="mt-2 text-sm text-muted">أرسلنا لك رسالة تأكيد، وبنذكّرك قبل الموعد بساعتين.</p>
+            <h2 className="mt-5 text-2xl font-bold">تم تأكيد موعدك ✅</h2>
+            <p className="mt-2 text-sm text-muted">أرسلنا لك رسالة تأكيد، وبنذكّرك قبل الموعد. نرجو الحضور قبل الموعد بـ 10 دقائق.</p>
             <dl className="mt-6 space-y-3 rounded-2xl bg-sand p-5 text-right text-sm">
               <Row label="الخدمة" value={service.name} />
-              <Row label="مع" value={chosenStaff.name} />
+              <Row label="الطبيب" value={chosenStaff.name} />
               <Row label="الموعد" value={`${fmtLongDate(parseYmd(date))} — ${fmtTime(slot.time)}`} />
-              <Row label="المبلغ" value={`${money(service.price)} (يُدفع في الصالون)`} />
+              <Row label="المبلغ" value={`${money(service.price)} (يُدفع في العيادة)`} />
             </dl>
             <div className="mt-6 grid gap-2 sm:grid-cols-2">
               <Link href="/dashboard" className="flex items-center justify-center gap-2 rounded-2xl bg-ink py-3.5 text-sm font-bold text-white">
-                <LayoutDashboard className="size-4" /> شوفه في لوحة التحكم
+                <LayoutDashboard className="size-4" /> شوفه في لوحة العيادة
               </Link>
               <button
                 type="button"
@@ -135,11 +138,13 @@ export default function BookingFlow() {
                   setStaffId(null);
                   setDate(null);
                   setSlot(null);
+                  setVisit('first');
+                  setNote('');
                   go(0);
                 }}
                 className="rounded-2xl border border-line py-3.5 text-sm font-bold"
               >
-                حجز جديد
+                موعد جديد
               </button>
             </div>
           </div>
@@ -171,7 +176,7 @@ export default function BookingFlow() {
           {/* step 1: service */}
           {step === 0 && (
             <section className="rise space-y-6">
-              <h2 className="text-xl font-bold">وش الخدمة اللي تبينها؟</h2>
+              <h2 className="text-xl font-bold">وش الخدمة اللي تحتاجها؟</h2>
               {categories.map((cat) => (
                 <div key={cat}>
                   <p className="mb-2 text-xs font-bold text-muted">{cat}</p>
@@ -209,12 +214,12 @@ export default function BookingFlow() {
           {/* step 2: staff */}
           {step === 1 && service && (
             <section className="rise space-y-4">
-              <h2 className="text-xl font-bold">تبين موظفة معيّنة؟</h2>
+              <h2 className="text-xl font-bold">اختر الطبيب</h2>
               <div className="grid gap-2.5 sm:grid-cols-2">
                 <StaffCard
                   active={staffId === null}
-                  title="أي موظفة متاحة"
-                  sub="أسرع موعد متاح"
+                  title="أول طبيب متاح"
+                  sub="أقرب موعد ممكن"
                   icon={<Sparkles className="size-5" />}
                   onClick={() => {
                     setStaffId(null);
@@ -228,7 +233,7 @@ export default function BookingFlow() {
                     active={staffId === p.id}
                     title={p.name}
                     sub={p.role}
-                    icon={<span className="text-lg font-bold">{p.name[0]}</span>}
+                    icon={<Stethoscope className="size-5" />}
                     onClick={() => {
                       setStaffId(p.id);
                       setSlot(null);
@@ -243,7 +248,7 @@ export default function BookingFlow() {
           {/* step 3: date & time */}
           {step === 2 && service && (
             <section className="rise space-y-5">
-              <h2 className="text-xl font-bold">اختاري اليوم والوقت</h2>
+              <h2 className="text-xl font-bold">اختر اليوم والوقت</h2>
               <div className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 pb-1">
                 {days.map((d) => {
                   const key = ymd(d);
@@ -276,7 +281,7 @@ export default function BookingFlow() {
 
               {!date ? (
                 <p className="flex items-center gap-2 rounded-2xl bg-white p-5 text-sm text-muted">
-                  <CalendarDays className="size-5 text-brand" /> اختاري يوم عشان تظهر الأوقات المتاحة.
+                  <CalendarDays className="size-5 text-brand" /> اختر يوم عشان تظهر مواعيد الطبيب المتاحة.
                 </p>
               ) : (
                 <div className="rounded-3xl border border-line bg-white p-5">
@@ -316,16 +321,16 @@ export default function BookingFlow() {
           {/* step 4: details */}
           {step === 3 && service && slot && (
             <form onSubmit={confirm} className="rise space-y-4">
-              <h2 className="text-xl font-bold">آخر خطوة.. بياناتك</h2>
+              <h2 className="text-xl font-bold">آخر خطوة.. بيانات المريض</h2>
               <label className="block">
-                <span className="mb-1.5 flex items-center gap-1.5 text-sm font-semibold"><User className="size-4 text-brand" /> الاسم</span>
+                <span className="mb-1.5 flex items-center gap-1.5 text-sm font-semibold"><User className="size-4 text-brand" /> اسم المريض</span>
                 <input
                   autoFocus
                   value={customer.name}
                   onChange={(e) => setCustomer((c) => ({ ...c, name: e.target.value }))}
                   maxLength={50}
                   className="w-full rounded-2xl border border-line bg-white px-4 py-3.5 outline-none focus:border-brand"
-                  placeholder="مثال: سارة"
+                  placeholder="الاسم الثلاثي"
                 />
               </label>
               <label className="block">
@@ -341,32 +346,58 @@ export default function BookingFlow() {
                 />
                 <span className="mt-1.5 block text-xs text-muted">بنرسل لك التأكيد والتذكير على هذا الرقم.</span>
               </label>
+              <div>
+                <span className="mb-1.5 block text-sm font-semibold">نوع الزيارة</span>
+                <div className="grid grid-cols-2 gap-2">
+                  {Object.entries(VISIT).map(([key, label]) => (
+                    <button
+                      key={key}
+                      type="button"
+                      onClick={() => setVisit(key)}
+                      className={`rounded-2xl border py-3 text-sm font-bold transition ${visit === key ? 'border-brand bg-brand-soft text-brand-dark' : 'border-line bg-white text-ink-soft'}`}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <label className="block">
+                <span className="mb-1.5 flex items-center gap-1.5 text-sm font-semibold"><FileText className="size-4 text-brand" /> سبب الزيارة <span className="font-normal text-muted">(اختياري)</span></span>
+                <textarea
+                  value={note}
+                  onChange={(e) => setNote(e.target.value)}
+                  maxLength={200}
+                  rows={2}
+                  className="w-full resize-none rounded-2xl border border-line bg-white px-4 py-3 outline-none focus:border-brand"
+                  placeholder="مثال: ألم في ضرس العقل"
+                />
+              </label>
               {error && <p className="rounded-xl bg-rose-50 p-3 text-sm font-medium text-rose-600">{error}</p>}
               <button type="submit" className="flex w-full items-center justify-center gap-2 rounded-2xl bg-brand py-4 font-bold text-white shadow-lift hover:bg-brand-dark">
-                <CalendarCheck className="size-5" /> تأكيد الحجز
+                <CalendarCheck className="size-5" /> تأكيد الموعد
               </button>
-              <p className="text-center text-xs text-muted">تقدرين تلغين أو تعدّلين الموعد من رابط الرسالة.</p>
+              <p className="text-center text-xs text-muted">تقدر تلغي أو تعدّل الموعد من رابط الرسالة.</p>
             </form>
           )}
         </div>
 
         {/* summary */}
         <aside className={`h-fit rounded-3xl border border-line bg-white p-5 shadow-soft lg:sticky lg:top-6 ${service ? '' : 'hidden lg:block'}`}>
-          <h3 className="mb-4 font-bold">ملخص الحجز</h3>
+          <h3 className="mb-4 font-bold">ملخص الموعد</h3>
           {service ? (
             <dl className="space-y-3 text-sm">
               <Row label="الخدمة" value={service.name} />
               <Row label="المدة" value={`${service.duration} دقيقة`} />
-              <Row label="الموظفة" value={chosenStaff?.name || (staffId ? staffById(state, staffId).name : 'أي موظفة متاحة')} />
+              <Row label="الطبيب" value={chosenStaff?.name || (staffId ? staffById(state, staffId).name : 'أول طبيب متاح')} />
               {date && <Row label="اليوم" value={fmtLongDate(parseYmd(date))} />}
               {slot && <Row label="الوقت" value={fmtTime(slot.time)} />}
               <div className="flex items-center justify-between border-t border-line pt-3 text-base font-bold">
-                <span>الإجمالي</span>
+                <span>قيمة الزيارة</span>
                 <span className="text-brand">{money(service.price)}</span>
               </div>
             </dl>
           ) : (
-            <p className="text-sm text-muted">اختاري خدمة للبدء.</p>
+            <p className="text-sm text-muted">اختر خدمة للبدء.</p>
           )}
         </aside>
       </div>

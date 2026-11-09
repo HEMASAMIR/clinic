@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Send } from 'lucide-react';
 import { whatsappLink } from '@/config/site';
 
-const TYPES = ['صالون نسائي', 'صالون رجالي / حلاق', 'عيادة', 'مركز تجميل وسبا', 'نادي رياضي / مدرب', 'مغسلة سيارات', 'أخرى'];
+const TYPES = ['عيادة أسنان', 'جلدية وتجميل', 'علاج طبيعي', 'أطفال', 'عيون', 'تغذية', 'صحة نفسية', 'مجمع طبي', 'تخصص آخر'];
 const COUNTRIES = ['السعودية', 'الإمارات', 'الكويت', 'قطر', 'البحرين', 'عُمان'];
 
 const field =
@@ -18,9 +18,9 @@ export default function LeadForm() {
   const submit = (e) => {
     e.preventDefault();
     const msg = [
-      'السلام عليكم، أبغى عرض تجريبي لنظام موعِد 👋',
+      'السلام عليكم، أبغى عرض تجريبي لنظام موعِد لعيادتي 👋',
       `الاسم: ${f.name}`,
-      `النشاط: ${f.business} (${f.type})`,
+      `العيادة: ${f.business} (${f.type})`,
       `الدولة: ${f.country}`,
       `عدد الفروع: ${f.branches}`,
     ].join('\n');
@@ -30,7 +30,7 @@ export default function LeadForm() {
   return (
     <form onSubmit={submit} className="grid gap-3 sm:grid-cols-2">
       <input required className={field} placeholder="اسمك" value={f.name} onChange={set('name')} maxLength={60} />
-      <input required className={field} placeholder="اسم النشاط" value={f.business} onChange={set('business')} maxLength={80} />
+      <input required className={field} placeholder="اسم العيادة" value={f.business} onChange={set('business')} maxLength={80} />
       <select className={field} value={f.type} onChange={set('type')}>
         {TYPES.map((t) => (
           <option key={t} className="text-ink">{t}</option>

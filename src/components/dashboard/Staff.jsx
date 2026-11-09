@@ -21,9 +21,9 @@ export default function Staff({ state }) {
   return (
     <div className="rise">
       <PageHead
-        title="الموظفين"
-        sub="مين يقدّم أي خدمة، وأيام الإجازة — والنظام يوزّع الحجوزات تلقائيًا"
-        action={<Button onClick={() => setAdding(true)}><Plus className="size-4" /> موظف جديد</Button>}
+        title="الأطباء"
+        sub="خدمات كل طبيب وأيام إجازته — والنظام يوزّع المواعيد تلقائيًا"
+        action={<Button onClick={() => setAdding(true)}><Plus className="size-4" /> طبيب جديد</Button>}
       />
       <div className="grid gap-4 xl:grid-cols-2">
         {state.staff.map((p) => {
@@ -31,7 +31,7 @@ export default function Staff({ state }) {
           return (
             <Card key={p.id}>
               <div className="flex items-center gap-3">
-                <span className="grid size-12 place-items-center rounded-2xl bg-brand text-lg font-bold text-white">{p.name[0]}</span>
+                <span className="grid size-12 place-items-center rounded-2xl bg-brand text-lg font-bold text-white">{p.name.replace('د. ', '')[0]}</span>
                 <div className="flex-1">
                   <p className="font-bold">{p.name}</p>
                   <p className="text-xs text-muted">{p.role}</p>
@@ -78,16 +78,16 @@ function StaffForm({ onClose }) {
     e.preventDefault();
     if (!name.trim()) return;
     update((s) => {
-      s.staff.push({ id: `e${Date.now().toString(36)}`, name: name.trim(), role: role.trim() || 'موظف', services: s.services.map((x) => x.id), off: [] });
+      s.staff.push({ id: `e${Date.now().toString(36)}`, name: name.trim().startsWith('د.') ? name.trim() : `د. ${name.trim()}`, role: role.trim() || 'طبيب', services: s.services.map((x) => x.id), off: [] });
       return s;
     });
     onClose();
   };
   return (
-    <Modal title="موظف جديد" onClose={onClose}>
+    <Modal title="طبيب جديد" onClose={onClose}>
       <form onSubmit={save} className="grid gap-4">
         <Field label="الاسم"><input required autoFocus className={inputCls} value={name} onChange={(e) => setName(e.target.value)} maxLength={30} /></Field>
-        <Field label="المسمى"><input className={inputCls} value={role} onChange={(e) => setRole(e.target.value)} maxLength={40} placeholder="مثال: خبيرة شعر" /></Field>
+        <Field label="التخصص"><input className={inputCls} value={role} onChange={(e) => setRole(e.target.value)} maxLength={40} placeholder="مثال: أخصائي تقويم الأسنان" /></Field>
         <Button type="submit" className="py-3">إضافة</Button>
       </form>
     </Modal>
